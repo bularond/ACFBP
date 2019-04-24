@@ -125,6 +125,7 @@ void setup()
     radio.setAutoAck(false);
     radio.powerUp();
     radio.openWritingPipe(pipe);
+    vibro(1000);
 }
 
 void loop()

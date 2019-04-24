@@ -7,18 +7,17 @@
 // #define DEBUG_SPEECH
 
 #define BUTTON 2
-#define BUTTON_GND 3
 
 #define MAX_WORD_IN_SPEECH 4
 
 RF24 radio(10, 9);
 const uint32_t pipe = 123456789;
 
-SoftwareSerial MP3(7, 8); // RX, TX
+SoftwareSerial MP3(8, 7); // RX, TX
 
 int to_speech[MAX_WORD_IN_SPEECH] = {200, 60, 6, -1};
 
-char my_number[5] = {'1', '6', 0, 0, 0};
+char my_number[5] = {'2', '6', '6', 0, 0};
 
 char data[5];
 
@@ -74,7 +73,7 @@ void set_speech(int in){
 
 void get_speech(){
     mp3_play(0);
-    delay(1670);
+    delay(2000);
     mp3_stop();
     delay(100);
     for (int i = 0; to_speech[i] != -1; i++){
@@ -83,7 +82,7 @@ void get_speech(){
         Serial.println(to_speech[i]);
         #endif
         mp3_play(to_speech[i]);
-        delay(1050);
+        delay(1300);
         mp3_stop();
         delay(100);
     }
@@ -155,7 +154,7 @@ void setup(){
     radio.openReadingPipe(1, pipe);
     radio.startListening();
 
-    pinMode(4, INPUT_PULLUP);
+    pinMode(BUTTON, INPUT_PULLUP);
     set_speech_from_number();
 }
 
@@ -167,10 +166,12 @@ void loop(){
     getData();
     if (check())
         last_met = millis();
-    if (digitalRead(4) == 0 && millis() - last_met <= 20000)
+    if (digitalRead(BUTTON) == 0 && millis() - last_met <= 20000)
     {
         Serial.print("INCOMING MESAGE \n");
         get_speech();
-        while (digitalRead(4) == 0);
+        mp3_play(9999);
+        while (digitalRead(BUTTON) == 0);
+        mp3_stop();
     }
 }
