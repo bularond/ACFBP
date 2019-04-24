@@ -171,6 +171,7 @@ void loop(){
         Serial.print("INCOMING MESAGE \n");
         get_speech();
         mp3_play(9999);
+        delay(10);
         while (digitalRead(BUTTON) == 0);
         mp3_stop();
     }
