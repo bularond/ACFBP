@@ -16,23 +16,18 @@ const uint32_t pipe = 123456789;
 #define SEND 200
 #define ERR 150
 
-const byte ROWS = 4; //four rows
-const byte COLS = 4; //three columns
-/*char keys[ROWS][COLS] = {
-    {'1', '4', '7', 'd'},
-    {'2', '5', '8', '0'},
-    {'3', '6', '9', 'c'},
-    {'s', 's', 's', 's'}};*/
+const byte ROWS = 4;
+const byte COLS = 4;
 char keys[ROWS][COLS] = {
     {'1', '2', '3', 's'},
     {'4', '5', '6', 's'},
     {'7', '8', '9', 's'},
-    {'d', '0', 'c', 's'}};
+    {'d', '0', 'c', 'r'}};
 byte rowPins[ROWS] = {3, 4, 5, 6}; //connect to the row pinouts of the keypad
 byte colPins[COLS] = {A2, A3, 8, 7}; //connect to the column pinouts of the keypad
 Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
 
-char real_number[5] = {0};
+char real_number[6] = {0};
 char write_number[5] = {0};
 int pos = 0;
 
@@ -64,6 +59,22 @@ void update_number()
         vibro(STANDART);
         switch (key)
         {
+        case 'r':
+            if (pos)
+            {
+                pos = 0;
+                for (int i = 0; i < 5; i++)
+                {
+                    real_number[i] = write_number[i];
+                    write_number[i] = 0;
+                }
+                real_number[5] = 1;
+                vibro(SEND, 1);
+            }
+            else
+                vibro(ERR, 2);
+            
+            break;
         case 's':
             if (pos)
             {
@@ -73,6 +84,7 @@ void update_number()
                     real_number[i] = write_number[i];
                     write_number[i] = 0;
                 }
+                real_number[5] = 0;
                 vibro(SEND, 1);
             }
             else
@@ -131,11 +143,9 @@ void setup()
 void loop()
 {
     update_number();
-    for (int i = 0; i < 5; i++)
-    {
+    for (int i = 0; i < 5 && write_number[i] != 0; i++)
         Serial.print(write_number[i]);
-    }
-    Serial.println();
+    Serial.print("\n");
     send_number();
     delay(1);
 }

@@ -19,7 +19,7 @@ int to_speech[MAX_WORD_IN_SPEECH] = {200, 60, 6, -1};
 
 char my_number[5] = {'2', '6', '6', 0, 0};
 
-char data[5];
+char data[6];
 
 
 int string_to_int(String inp, int st = 0){
@@ -40,6 +40,8 @@ void set_speech(int in){
     Serial.print("Set speech ");
     Serial.println(in);
     #endif
+    for(int i = 0; i < MAX_WORD_IN_SPEECH; i++)
+        to_speech[i] = -1;
     int pos_to_speech = 0;
     if(in / 100){ // 3 sight
         to_speech[pos_to_speech] = in - in % 100;
@@ -73,9 +75,9 @@ void set_speech(int in){
 
 void get_speech(){
     mp3_play(0);
-    delay(2000);
+    delay(1800);
     mp3_stop();
-    delay(100);
+    delay(50);
     for (int i = 0; to_speech[i] != -1; i++){
         #ifdef DEBUG_SPEECH        
         Serial.print("Talk ");
@@ -84,7 +86,7 @@ void get_speech(){
         mp3_play(to_speech[i]);
         delay(1300);
         mp3_stop();
-        delay(100);
+        delay(40);
     }
 }
 
@@ -130,8 +132,6 @@ void getData(){
         Serial.print('\n');
         #endif
     }
-    else
-        data[0] = 0;
 }
 
 void setup(){
@@ -158,21 +158,30 @@ void setup(){
     set_speech_from_number();
 }
 
-unsigned long last_met = 0;
+unsigned long last_met = 100000000000;
 
 void loop(){
     if(Serial.available())
         comand_handler(Serial.readString());
     getData();
+    if(data[5] == 1){
+        int i = 0;
+        for(; i < 5 && data[i]; i++)
+            my_number[i] = data[i];
+        for(; i < 5; i++)
+            my_number[i] = 0;
+        set_speech_from_number();
+    }
     if (check())
         last_met = millis();
     if (digitalRead(BUTTON) == 0 && millis() - last_met <= 20000)
     {
         Serial.print("INCOMING MESAGE \n");
         get_speech();
-        mp3_play(9999);
-        delay(10);
-        while (digitalRead(BUTTON) == 0);
-        mp3_stop();
+        if(digitalRead(BUTTON) == 0){
+            mp3_play(9999);
+            while (digitalRead(BUTTON) == 0);
+            mp3_stop();
+        }
     }
 }
