@@ -75,7 +75,7 @@ void set_speech(int in){
 
 void get_speech(){
     mp3_play(0);
-    delay(1800);
+    delay(1900);
     mp3_stop();
     delay(50);
     for (int i = 0; to_speech[i] != -1; i++){
@@ -174,7 +174,7 @@ void loop(){
     }
     if (check())
         last_met = millis();
-    if (digitalRead(BUTTON) == 0 && millis() - last_met <= 20000)
+    if (digitalRead(BUTTON) == 0 && millis() - last_met <= 3000)
     {
         Serial.print("INCOMING MESAGE \n");
         get_speech();
