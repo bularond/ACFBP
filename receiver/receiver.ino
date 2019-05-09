@@ -132,6 +132,10 @@ void getData(){
         Serial.print('\n');
         #endif
     }
+    else{
+        for(int i = 0; i < 5; i++)
+            data[i] = 0;
+    }
 }
 
 void setup(){
