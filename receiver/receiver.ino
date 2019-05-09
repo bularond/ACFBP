@@ -3,7 +3,7 @@
 #include "DFPlayer_Mini_Mp3.h"
 #include <SoftwareSerial.h>
 
- #define DEBUG_INCOME
+// #define DEBUG_INCOME
 // #define DEBUG_SPEECH
 
 #define BUTTON 2
@@ -43,7 +43,7 @@ void set_speech(int in){
     for(int i = 0; i < MAX_WORD_IN_SPEECH; i++)
         to_speech[i] = -1;
     int pos_to_speech = 0;
-    if(in / 100){ // 3 sight
+    if(in / 100){
         to_speech[pos_to_speech] = in - in % 100;
         in -= to_speech[pos_to_speech];
         pos_to_speech++;
@@ -144,8 +144,8 @@ void setup(){
     pinMode(11, INPUT_PULLUP);
     
     MP3.begin(9600);
-    mp3_set_serial(MP3); // активируем сериал порт с модулем
-    mp3_set_volume(30);  // ставим начальную громкость 30
+    mp3_set_serial(MP3); 
+    mp3_set_volume(30);
     delay(100);
 
     radio.begin();
