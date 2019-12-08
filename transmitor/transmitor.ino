@@ -143,9 +143,10 @@ void setup()
 void loop()
 {
     update_number();
-    for (int i = 0; i < 5 && write_number[i] != 0; i++)
+    for (int i = 0; i < 5 && write_number[i] != 0; i++){
         Serial.print(write_number[i]);
-    Serial.print("\n");
+        Serial.print("\n");
+    }
     send_number();
     delay(1);
 }
