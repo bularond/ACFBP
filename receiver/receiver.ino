@@ -3,7 +3,7 @@
 #include "DFPlayer_Mini_Mp3.h"
 #include <SoftwareSerial.h>
 
-// #define DEBUG_INCOME
+ #define DEBUG_INCOME
 // #define DEBUG_SPEECH
 
 #define BUTTON 2
@@ -184,7 +184,12 @@ void loop(){
         get_speech();
         if(digitalRead(BUTTON) == 0){
             mp3_play(9999);
-            while (digitalRead(BUTTON) == 0);
+            last_met = millis();
+            while (digitalRead(BUTTON) == 0 && millis() - last_met <= 3000){
+                getData();
+                if (check())
+                    last_met = millis();
+            }
             mp3_stop();
         }
     }

@@ -2,9 +2,7 @@
 #include <nRF24L01.h>
 #include <RF24.h>
 #include <Keypad.h>
-
-RF24 radio(10, 9);
-const uint32_t pipe = 123456789;
+RF24 radio(10, 9); const uint32_t pipe = 123456789;
 
 #define TYPE_INPUT 1
 
@@ -21,7 +19,7 @@ const byte COLS = 4;
 char keys[ROWS][COLS] = {
     {'1', '2', '3', 's'},
     {'4', '5', '6', 's'},
-    {'7', '8', '9', 's'},
+    {'7', '8', '9', 'e'},
     {'d', '0', 'c', 'r'}};
 byte rowPins[ROWS] = {3, 4, 5, 6}; //connect to the row pinouts of the keypad
 byte colPins[COLS] = {A2, A3, 8, 7}; //connect to the column pinouts of the keypad
@@ -73,7 +71,6 @@ void update_number()
             }
             else
                 vibro(ERR, 2);
-            
             break;
         case 's':
             if (pos)
@@ -101,9 +98,25 @@ void update_number()
                 write_number[i] = 0;
             vibro(CLEAR);
             break;
-        default:
-            if (pos == 0 && key == '0')
-                ;
+        case 'e':
+            pos = 0;
+            for (int i = 0; i < 5; i++){
+                write_number[i] = 0;
+                real_number[i] = 0;
+            }
+            vibro(SEND, 1);
+            break;
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            if (pos == 0 && key == '0') ;
             else if (pos != 5)
             {
                 write_number[pos] = key;
